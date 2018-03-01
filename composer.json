@@ -1,0 +1,30 @@
+{
+    "name": "hernandev/oauth2-sc2",
+    "description": "SteemConnect V2 Oauth client provider.",
+    "type": "library",
+    "keywords": ["oauth", "steem", "steem-connect", "sc2"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Diego Hernandes",
+            "email": "diego@hernandev.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "SteemConnect\\OAuth2\\": "src/"
+        }
+    },
+    "require": {
+        "league/oauth2-client": "^2.3",
+        "php": ">=7.1.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "illuminate/support": "^5.6",
+        "symfony/http-foundation": "^4.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+    }
+}
