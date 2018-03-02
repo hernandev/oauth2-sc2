@@ -2,9 +2,13 @@
 
 namespace SteemConnect\OAuth2\Provider;
 
-
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ResourceOwnerTest.
+ *
+ * Unit tests for the resource owner logic.
+ */
 class ResourceOwnerTest extends TestCase
 {
     /**
