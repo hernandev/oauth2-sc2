@@ -59,13 +59,13 @@ class Config
         'access_token'  => 'api/oauth2/token',
         'revoke'        => 'oauth2/token/revoke',
         // SC2 API endpoints.
-        'account'       => 'api/me'
+        'account'       => 'api/me',
     ];
 
     /**
      * Config constructor.
      *
-     * @param string $clientId Client ID is the Steem account username, created under SC2 dashboard.
+     * @param string $clientId     Client ID is the Steem account username, created under SC2 dashboard.
      * @param string $clientSecret Client Secret can be obtained on the SC2 dashboard.
      */
     public function __construct(string $clientId, string $clientSecret)
@@ -94,7 +94,7 @@ class Config
      *
      * @return Config
      */
-    public function setClientId(string $clientId): Config
+    public function setClientId(string $clientId): self
     {
         $this->clientId = $clientId;
 
@@ -118,7 +118,7 @@ class Config
      *
      * @return Config
      */
-    public function setClientSecret(string $clientSecret): Config
+    public function setClientSecret(string $clientSecret): self
     {
         $this->clientSecret = $clientSecret;
 
@@ -142,7 +142,7 @@ class Config
      *
      * @return Config
      */
-    public function setReturnUrl(string $returnUrl): Config
+    public function setReturnUrl(string $returnUrl): self
     {
         $this->returnUrl = $returnUrl;
 
@@ -166,7 +166,7 @@ class Config
      *
      * @return Config
      */
-    public function setScopes(array $scopes = []) : Config
+    public function setScopes(array $scopes = []) : self
     {
         $this->scopes = $scopes;
 
@@ -175,6 +175,7 @@ class Config
 
     /**
      * Returns the base URL in which the calls will be made.
+     *
      * @return string
      */
     public function getBaseUrl() : string
@@ -189,7 +190,7 @@ class Config
      *
      * @return $this
      */
-    public function setBaseUrl(string $baseUrl) : Config
+    public function setBaseUrl(string $baseUrl) : self
     {
         $this->baseUrl = $baseUrl;
 
@@ -218,7 +219,7 @@ class Config
      *
      * @return Config
      */
-    public function setAuthorizationEndpoint(string $authorizationEndpoint): Config
+    public function setAuthorizationEndpoint(string $authorizationEndpoint): self
     {
         $this->setEndpoint('authorization', $authorizationEndpoint);
 
@@ -244,7 +245,7 @@ class Config
      *
      * @return Config
      */
-    public function setAccessTokenEndpoint(string $accessTokenEndpoint): Config
+    public function setAccessTokenEndpoint(string $accessTokenEndpoint): self
     {
         $this->setEndpoint('access_token', $accessTokenEndpoint);
 
@@ -270,7 +271,7 @@ class Config
      *
      * @return Config
      */
-    public function setRevokeEndpoint(string $revokeEndpoint): Config
+    public function setRevokeEndpoint(string $revokeEndpoint): self
     {
         $this->setEndpoint('revoke', $revokeEndpoint);
 
@@ -294,7 +295,7 @@ class Config
      *
      * @return $this
      */
-    public function setAccountEndpoint(string $accountEndpoint): Config
+    public function setAccountEndpoint(string $accountEndpoint): self
     {
         $this->setEndpoint('account', $accountEndpoint);
 
@@ -314,7 +315,7 @@ class Config
             $endpoint = $this->getEndpoint($endpoint);
         }
 
-        return trim($this->getBaseUrl(), '/') . "/" . trim($endpoint, '/');
+        return trim($this->getBaseUrl(), '/').'/'.trim($endpoint, '/');
     }
 
     /**
@@ -333,12 +334,12 @@ class Config
      * Customize a given endpoint.
      *
      * @param string $resourceKey Key of the resource being looked for,
-     * @param string $uri Endpoint to customize.
+     * @param string $uri         Endpoint to customize.
      *
      * @return string URI / Endpoint on SC2 API.
      */
     protected function setEndpoint(string $resourceKey, string $uri) : string
     {
-        return !!array_set($this->endpoints, $resourceKey, $uri);
+        return (bool) array_set($this->endpoints, $resourceKey, $uri);
     }
 }
