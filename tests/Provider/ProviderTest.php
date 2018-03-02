@@ -2,6 +2,7 @@
 
 namespace SteemConnect\OAuth2\Provider;
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\TestCase;
 use SteemConnect\OAuth2\Config\Config;
@@ -120,6 +121,32 @@ class ProviderTest extends TestCase
         $this->assertEquals('mock-refresh-token', $token->getRefreshToken());
         // assert the resource owner id value.
         $this->assertEquals('dummy-user', $token->getResourceOwnerId());
+    }
+
+    public function test_code_parsing_error()
+    {
+        // create a mock http client.
+        /** @var  $client */
+        $client = $this->getHttpMock(['error' => 'invalid-access-code']);
+
+        // set the mock client on the provider.
+        $this->provider->setHttpClient($client);
+
+        // try the code parsing method.
+        try {
+            $token = $this->provider->parseReturn('mock-access-code');
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(IdentityProviderException::class, $e);
+        }
+//        // asset the correct token was parsed.
+//        $this->assertEquals('mock-access-token', $token->getToken());
+//        // parse the token expiration validity.
+//        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
+//        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
+//        // assert the refresh token information.
+//        $this->assertEquals('mock-refresh-token', $token->getRefreshToken());
+//        // assert the resource owner id value.
+//        $this->assertEquals('dummy-user', $token->getResourceOwnerId());
     }
 
     /**

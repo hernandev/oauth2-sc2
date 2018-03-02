@@ -112,16 +112,11 @@ class Provider extends AbstractProvider
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if (!empty($data[$this->responseError])) {
-            $error = $data[$this->responseError];
-            if (!is_string($error)) {
-                $error = var_export($error, true);
-            }
-            $code = $this->responseCode && !empty($data[$this->responseCode]) ? $data[$this->responseCode] : 0;
-            if (!is_int($code)) {
-                $code = intval($code);
-            }
+            $error = array_get($data, $this->responseError, null);
 
-            throw new IdentityProviderException($error, $code, $data);
+            $code = $this->responseCode && !empty(array_get($data, $this->responseCode)) ? array_get($data, $this->responseCode) : 0;
+
+            throw new IdentityProviderException($error, (int) $code, $data);
         }
     }
 
@@ -143,7 +138,7 @@ class Provider extends AbstractProvider
     public function parseReturn(string $code = null): ?AccessToken
     {
         // if no code was passed, request code will be detected, if any.
-        $code = $code ?? Request::current()->query->get('code', null);
+        $code = $code ? $code : Request::current()->query->get('code', null);
 
         // just return null for now.
         if (!$code) {
