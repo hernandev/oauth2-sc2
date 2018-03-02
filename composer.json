@@ -16,6 +16,11 @@
             "SteemConnect\\OAuth2\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "SteemConnect\\OAuth2\\": "tests/"
+        }
+    },
     "require": {
         "league/oauth2-client": "^2.3",
         "php": ">=7.1.0",
@@ -26,5 +31,6 @@
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
+        "phpunit/phpunit": "^7.0"
     }
 }
