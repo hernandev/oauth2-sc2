@@ -31,6 +31,9 @@ class Request
      */
     public static function current()
     {
+        // this is a dummy call.
+        $dummy = new self();
+
         // assign a new instance only if none is present.
         if (!self::$instance) {
             self::$instance = SymfonyRequest::createFromGlobals();

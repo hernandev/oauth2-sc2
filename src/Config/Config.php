@@ -183,6 +183,20 @@ class Config
     }
 
     /**
+     * Returns the base URL in which the calls will be made.
+     *
+     * @param string $baseUrl Base SC2 URL.
+     *
+     * @return $this
+     */
+    public function setBaseUrl(string $baseUrl) : Config
+    {
+        $this->baseUrl = $baseUrl;
+
+        return $this;
+    }
+
+    /**
      * Retrieves the OAuth2 authorization URL on SC2 relative to backend calls.
      *
      * -- Note for developers:
@@ -325,6 +339,6 @@ class Config
      */
     protected function setEndpoint(string $resourceKey, string $uri) : string
     {
-        return array_set($this->endpoints, $resourceKey, $uri);
+        return !!array_set($this->endpoints, $resourceKey, $uri);
     }
 }
