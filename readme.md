@@ -1,6 +1,7 @@
 ## SteemConnect V2: OAuth2 Client / Provider
 
 [![Build Status](https://travis-ci.org/hernandev/oauth2-sc2.svg?branch=master)](https://travis-ci.org/hernandev/oauth2-sc2)
+[![Codecov](https://codecov.io/gh/hernandev/oauth2-sc2/branch/master/graph/badge.svg)](https://codecov.io/gh/hernandev/oauth2-sc2)
 [![Latest Stable Version](https://poser.pugx.org/hernandev/oauth2-sc2/v/stable)](https://packagist.org/packages/hernandev/oauth2-sc2)
 [![License](https://poser.pugx.org/hernandev/oauth2-sc2/license)](https://packagist.org/packages/hernandev/oauth2-sc2)
 
