@@ -19,7 +19,7 @@ use SteemConnect\OAuth2\Config\Config;
  */
 class Provider extends AbstractProvider
 {
-    /**
+    /*
      * Traits: Bearer Authorization.
      */
     use BearerAuthorizationTrait;
@@ -107,7 +107,7 @@ class Provider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
@@ -116,16 +116,17 @@ class Provider extends AbstractProvider
             if (!is_string($error)) {
                 $error = var_export($error, true);
             }
-            $code  = $this->responseCode && !empty($data[$this->responseCode])? $data[$this->responseCode] : 0;
+            $code = $this->responseCode && !empty($data[$this->responseCode]) ? $data[$this->responseCode] : 0;
             if (!is_int($code)) {
                 $code = intval($code);
             }
+
             throw new IdentityProviderException($error, $code, $data);
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
@@ -150,10 +151,9 @@ class Provider extends AbstractProvider
         }
 
         // try a token exchange.
-        $accessToken = $this->getAccessToken('authorization_code', [ 'code' => $code ]);
+        $accessToken = $this->getAccessToken('authorization_code', ['code' => $code]);
 
         // returns the token instance, if possible.
         return $accessToken;
     }
-
 }
