@@ -1,5 +1,9 @@
 ## SteemConnect V2: OAuth2 Client / Provider
 
+[![Build Status](https://travis-ci.org/hernandev/oauth2-sc2.svg?branch=master)](https://travis-ci.org/hernandev/oauth2-sc2)
+[![Latest Stable Version](https://poser.pugx.org/hernandev/oauth2-sc2/v/stable)](https://packagist.org/packages/hernandev/oauth2-sc2)
+[![License](https://poser.pugx.org/hernandev/oauth2-sc2/license)](https://packagist.org/packages/hernandev/oauth2-sc2)
+
 This library is a simple, easy implement OAuth2 client for SteemConnect V2 clients.
 
 It takes the pain from integrating and parsing all the specifics and delivers a great authorization flow for those who aim to handle authorization through SteemConnect V2.
