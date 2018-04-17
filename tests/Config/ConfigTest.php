@@ -22,7 +22,7 @@ class ConfigTest extends TestCase
     /**
      * @var string Dummy return URL.
      */
-    protected $returnUrl = 'https://return.dummy.callback';
+    protected $returnUrl = 'https://return.dummy/callback';
 
     /**
      * @var array List of default scopes.
@@ -43,8 +43,10 @@ class ConfigTest extends TestCase
      */
     public function setUp()
     {
+        // call parent setup method.
         parent::setUp();
 
+        // start a dump config instance for testing.
         $this->config = new Config($this->clientId, $this->clientSecret);
     }
 
@@ -53,8 +55,10 @@ class ConfigTest extends TestCase
      */
     public function test_instance_id_and_secret()
     {
+        // alias the default config instance.
         $config = $this->config;
 
+        // both client and secret must match.
         $this->assertEquals($this->clientId, $config->getClientId());
         $this->assertEquals($this->clientSecret, $config->getClientSecret());
     }
@@ -64,14 +68,15 @@ class ConfigTest extends TestCase
      */
     public function test_override_id_and_secret()
     {
+        // alias the default config instance.
         $config = $this->config;
 
+        // override the client id and secret on config instance.
         $config->setClientId('custom.dummy.id');
-
-        $this->assertEquals('custom.dummy.id', $config->getClientId());
-
         $config->setClientSecret('custom.dummy.secret');
 
+        // assert the custom values were correctly set and retrieved.
+        $this->assertEquals('custom.dummy.id', $config->getClientId());
         $this->assertEquals('custom.dummy.secret', $config->getClientSecret());
     }
 
@@ -80,8 +85,10 @@ class ConfigTest extends TestCase
      */
     public function test_default_scopes()
     {
+        // alias the config instance.
         $config = $this->config;
 
+        // assert the default scopes were correctly set.
         $this->assertEquals($this->defaultScopes, $config->getScopes());
     }
 
@@ -90,12 +97,16 @@ class ConfigTest extends TestCase
      */
     public function test_custom_scopes()
     {
+        // alias the config instance.
         $config = $this->config;
 
-        $scopes = array_merge($this->defaultScopes, ['offline']);
+        // define custom scopes.
+        $scopes = array_merge(['offline', 'comment_delete']);
 
+        // customize the scopes.
         $config->setScopes($scopes);
 
+        // assert the custom values were set.
         $this->assertEquals($scopes, $config->getScopes());
     }
 
@@ -104,10 +115,15 @@ class ConfigTest extends TestCase
      */
     public function test_return_url()
     {
+        // alias the default config instance.
         $config = $this->config;
 
-        $config->setReturnUrl($this->returnUrl);
+        // assert no return URL was set to start with.
+        $this->assertNull($config->getReturnUrl());
 
+        // set the return null on the config instance.
+        $config->setReturnUrl($this->returnUrl);
+        // assert the value was correctly set.
         $this->assertEquals($this->returnUrl, $config->getReturnUrl());
     }
 
@@ -116,9 +132,11 @@ class ConfigTest extends TestCase
      */
     public function test_default_base_url()
     {
+        // alias config instance.
         $config = $this->config;
 
-        $this->assertEquals('https://v2.steemconnect.com', $config->getBaseUrl());
+        // assert the default config is steemconnect main site.
+        $this->assertEquals('https://steemconnect.com', $config->getBaseUrl());
     }
 
     /**
@@ -126,67 +144,52 @@ class ConfigTest extends TestCase
      */
     public function test_custom_base_url()
     {
+        // alias config instance.
         $config = $this->config;
 
-        $config->setBaseUrl('https://custom.steem.connect');
+        // declare a custom URL.
+        $customUrl = 'http://custom.sc/url';
 
-        $this->assertEquals('https://custom.steem.connect', $config->getBaseUrl());
+        // set the custom base url.
+        $config->setBaseUrl($customUrl);
+        // assert the value was properly set and retrieved.
+        $this->assertEquals($customUrl, $config->getBaseUrl());
     }
 
     /**
-     * Authorization URL testing.
+     * Test the default endpoint values for all resources.
      */
-    public function test_default_and_custom_authorization_endpoints()
+    public function test_default_endpoints()
     {
-        $config =  $this->config;
+        // alias the config instance.
+        $config = $this->config;
 
+        // assert the default endpoints match.
         $this->assertEquals('oauth2/authorize', $config->getAuthorizationEndpoint());
-
-        $config->setAuthorizationEndpoint('authorize.custom');
-
-        $this->assertEquals('authorize.custom', $config->getAuthorizationEndpoint());
-    }
-
-    /**
-     * Access Token URL testing.
-     */
-    public function test_default_and_custom_token_endpoints()
-    {
-        $config =  $this->config;
-
         $this->assertEquals('api/oauth2/token', $config->getAccessTokenEndpoint());
-
-        $config->setAccessTokenEndpoint('token.custom');
-
-        $this->assertEquals('token.custom', $config->getAccessTokenEndpoint());
-    }
-
-    /**
-     * Revoke URL testing.
-     */
-    public function test_default_and_custom_revoke_endpoints()
-    {
-        $config =  $this->config;
-
         $this->assertEquals('oauth2/token/revoke', $config->getRevokeEndpoint());
-
-        $config->setRevokeEndpoint('revoke.custom');
-
-        $this->assertEquals('revoke.custom', $config->getRevokeEndpoint());
+        $this->assertEquals('api/me', $config->getAccountEndpoint());
     }
 
     /**
-     * Account endpoint testing.
+     * Test the endpoint customization for all resources.
      */
-    public function test_default_and_custom_account_endpoints()
+    public function test_custom_endpoints()
     {
-        $config =  $this->config;
+        // alias the config instance.
+        $config = $this->config;
 
-        $this->assertEquals('api/me', $config->getAccountEndpoint());
+        // customize the endpoints.
+        $config->setAuthorizationEndpoint('custom/authorization');
+        $config->setAccessTokenEndpoint('custom/token');
+        $config->setRevokeEndpoint('custom/revoke');
+        $config->setAccountEndpoint('custom/account');
 
-        $config->setAccountEndpoint('account.custom');
-
-        $this->assertEquals('account.custom', $config->getAccountEndpoint());
+        // assert the default endpoints match.
+        $this->assertEquals('custom/authorization', $config->getAuthorizationEndpoint());
+        $this->assertEquals('custom/token', $config->getAccessTokenEndpoint());
+        $this->assertEquals('custom/revoke', $config->getRevokeEndpoint());
+        $this->assertEquals('custom/account', $config->getAccountEndpoint());
     }
 
     /**
@@ -194,12 +197,16 @@ class ConfigTest extends TestCase
      */
     public function test_url_building()
     {
-        $config =  $this->config;
+        // alias the config instance.
+        $config = $this->config;
 
+        // set a custom base url.
         $config->setBaseUrl('https://custom.url/');
 
+        // set a custom authorization endpoint.
         $config->setAuthorizationEndpoint('/custom/auth/');
 
+        // assert the URL is built against custom values.
         $this->assertEquals('https://custom.url/custom/auth', $config->buildUrl('authorization'));
     }
 }
