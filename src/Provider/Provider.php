@@ -147,7 +147,7 @@ class Provider extends AbstractProvider
 
         // try a token exchange.
         $accessToken = $this->getAccessToken('authorization_code', [
-            'code' => $code
+            'code' => $code,
         ]);
 
         // returns the token instance, if possible.
@@ -196,7 +196,7 @@ class Provider extends AbstractProvider
     {
         // ask for a new access token using the refresh_token grant type.
         $accessToken = $this->getAccessToken('refresh_token', [
-            'refresh_token' => $refreshToken
+            'refresh_token' => $refreshToken,
         ]);
 
         // returns the token instance, if possible.
