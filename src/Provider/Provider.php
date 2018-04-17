@@ -202,4 +202,42 @@ class Provider extends AbstractProvider
         // returns the token instance, if possible.
         return $accessToken;
     }
+
+    /**
+     * Encode a given AccessToken instance as JSON.
+     *
+     * @param AccessToken $token
+     *
+     * @return null|string
+     */
+    public function encodeToken(AccessToken $token) : ?string
+    {
+        return json_encode($token);
+    }
+
+    /**
+     * Decode a given token into JSON.
+     *
+     * @param string $tokenJson
+     *
+     * @return AccessToken|null
+     */
+    public function decodeToken(string $tokenJson) : ?AccessToken
+    {
+        // decode the json into an array.
+        $tokenData = json_decode($tokenJson, true);
+
+        // returns null if the token does not have an access token key.
+        if (!array_key_exists('access_token', $tokenData)) {
+            return null;
+        }
+
+        // returns null if the given access_token key exists but the value is invalid.
+        if (!$tokenData['access_token']) {
+            return null;
+        }
+
+        // factory and return a new AccessToken instance.
+        return new AccessToken($tokenData);
+    }
 }
