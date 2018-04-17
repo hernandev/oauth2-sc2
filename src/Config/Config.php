@@ -48,7 +48,7 @@ class Config
     /**
      * @var string SC2 API base URL.
      */
-    protected $baseUrl = 'https://v2.steemconnect.com';
+    protected $baseUrl = 'https://steemconnect.com';
 
     /**
      * @var array List of knows SC2 endpoints.

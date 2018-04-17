@@ -146,7 +146,58 @@ class Provider extends AbstractProvider
         }
 
         // try a token exchange.
-        $accessToken = $this->getAccessToken('authorization_code', ['code' => $code]);
+        $accessToken = $this->getAccessToken('authorization_code', [
+            'code' => $code,
+        ]);
+
+        // returns the token instance, if possible.
+        return $accessToken;
+    }
+
+    /**
+     * Issue a new Access Token from a refresh token.
+     *
+     * Notice:
+     * Not all tokens are refreshable.
+     * The access token may be issued without a refresh token,
+     * OR, the access token instance was incorrectly stored,
+     * meaning the refresh token is not present
+     *
+     * @param AccessToken $currentToken
+     *
+     * @return AccessToken|null
+     */
+    public function refreshToken(AccessToken $currentToken): ?AccessToken
+    {
+        // get the refresh token string from the current token.
+        $refreshToken = $currentToken->getRefreshToken();
+
+        // if the refresh token is not present...
+        if (!$refreshToken) {
+            // return null instead of trying the refresh flow.
+            return null;
+        }
+
+        // call the refresh from string method.
+        return $this->refreshTokenString($refreshToken);
+    }
+
+    /**
+     * Issue a new Access Token from a refresh token.
+     *
+     * This method takes a token string as parameter
+     * instead of an AccessToken instance.
+     *
+     * @param string $refreshToken
+     *
+     * @return AccessToken|null
+     */
+    public function refreshTokenString(string $refreshToken): ?AccessToken
+    {
+        // ask for a new access token using the refresh_token grant type.
+        $accessToken = $this->getAccessToken('refresh_token', [
+            'refresh_token' => $refreshToken,
+        ]);
 
         // returns the token instance, if possible.
         return $accessToken;
