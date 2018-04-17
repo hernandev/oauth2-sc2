@@ -95,16 +95,59 @@ $token->getToken();
 // gets the expiration date, so you know the token is no longer valid.
 $token->getExpires();
 
-// gets the refresh token, which may be used to issue a new token, after the original one expired.
+// gets the refresh token, which may be used to issue a new token, if the offline scope was requested.
 $token->getRefreshToken();
 
-// gets the standard ID for the account athorizing your app, it means, this field retrieves the account @username
+// gets the standard ID for the account authorizing your app, it means, this field retrieves the account @username
 $token->getResourceOwnerId();
 ```
 
-**That's All Folks!**
+#### 2.4. Storing Tokens.
 
-#### 2.4. Extras:
+After obtained a given user's Access Token, in most cases, you will need to store the tokens for later usage.
+
+Whatever the approach for storing the tokens (browser session / database), you will need to serialize
+the tokens and later, decode then.
+
+This can be easily done, by two methods on the Provider:
+
+Encoding:
+
+```php
+// encode the AccessToken instance into a JSON string.
+$tokenJson = $provider->encodeToken($token);
+```
+
+Decoding:
+
+```php
+// decode the JSON string token back into a AccessToken instance.
+$token = $provider->decodeToken($tokenJson);
+```
+
+#### 2.5. Refreshing Expired Tokens.
+
+Whenever the `offline` scope is used to issue a token, the resulting `AccessToken` instance will contain
+a field called `refresh_token. The refresh token can be used for issuing a new one.
+
+To issue a new token, using a existing one, that contains a refresh token, just do:
+
+```php
+// get a new token from the existing / expired one.
+$newToken = $provider->refreshToken($token);
+```
+
+OR
+
+If you only stored the refresh_token field value, you may use that string directly, by doing:
+
+
+```php
+// get a new AccessToken using the refresh token string.
+$token = $provider->refreshTokenString($refreshTokenString);  
+```
+
+#### 2.5. Extras:
 
 Of course there are extras!
 
@@ -121,3 +164,5 @@ $owner->balance;
 $owner->reputation;
 // and so on...
 ```
+
+**That's All Folks!**
