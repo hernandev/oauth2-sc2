@@ -276,6 +276,51 @@ class ProviderTest extends TestCase
     }
 
     /**
+     * Tests for token encoding into JSON and decoding from JSON strings.
+     */
+    public function test_token_encoding_and_decoding()
+    {
+        // creates a new access token instance.
+        $token = new AccessToken($this->accessTokenData);
+
+        // encode the token as JSON string.
+        $encodedToken = $this->provider->encodeToken($token);
+
+        // assert the provider encodes the token correctly.
+        $this->assertEquals(json_encode($token), $encodedToken);
+
+        // test decoding the token.
+        $this->assertEquals((string) $token, (string) $this->provider->decodeToken($encodedToken));
+    }
+
+    /**
+     * Tests for token decoding with invalid inputs.
+     */
+    public function test_invalid_token_decoding()
+    {
+        // get a copy of the access token data.
+        $tokenData = $this->accessTokenData;
+
+        // unset the access token key from the data.
+        unset($tokenData['access_token']);
+
+        // encode the token back into JSON.
+        $encodedToken = json_encode($tokenData);
+
+        // assert decoding with an invalid input (no access_token field).
+        $this->assertNull($this->provider->decodeToken($encodedToken));
+
+        // re-set the access_token key, but with a null value.
+        $tokenData['access_token'] = null;
+
+        // encode the token back into JSON.
+        $encodedToken = json_encode($tokenData);
+
+        // assert decoding with an invalid input (null / empty access_token field).
+        $this->assertNull($this->provider->decodeToken($encodedToken));
+    }
+
+    /**
      * Generate a config mock.
      *
      * @return Mockery\MockInterface|Config
