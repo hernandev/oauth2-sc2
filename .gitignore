@@ -1,3 +1,6 @@
 /vendor
 /coverage
 /composer.lock
+
+# Directory used for testing.
+/sandbox
