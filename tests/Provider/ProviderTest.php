@@ -73,25 +73,6 @@ class ProviderTest extends TestCase
     }
 
     /**
-     * Generate a config mock.
-     *
-     * @return Mockery\MockInterface|Config
-     */
-    protected function mockConfig()
-    {
-        // start a config mock.
-        $config = Mockery::mock(Config::class);
-
-        // manage default expectations.
-        $config->shouldReceive('getClientId')->andReturn('some.client');
-        $config->shouldReceive('getClientSecret')->andReturn('some.secret');
-        $config->shouldReceive('getReturnUrl')->andReturn('http://some.return/url');
-
-        // return the mock itself.
-        return $config;
-    }
-
-    /**
      * Scope testing.
      */
     public function test_scope_parsing_on_provider()
@@ -116,7 +97,11 @@ class ProviderTest extends TestCase
      */
     public function test_authorization_url_parsing_on_provider()
     {
-        $this->assertEquals($this->config->buildUrl('authorization'), $this->provider->getBaseAuthorizationUrl());
+        // alias the config instance.
+        $config = $this->config;
+
+        // assert the provider uses the config values.
+        $this->assertEquals($config->buildUrl('authorization'), $this->provider->getBaseAuthorizationUrl());
     }
 
     /**
@@ -124,7 +109,11 @@ class ProviderTest extends TestCase
      */
     public function test_access_token_url_parsing_on_provider()
     {
-        $this->assertEquals($this->config->buildUrl('access_token'), $this->provider->getBaseAccessTokenUrl([]));
+        // alias the config instance.
+        $config = $this->config;
+
+        // assert the provider uses the config values.
+        $this->assertEquals($config->buildUrl('access_token'), $this->provider->getBaseAccessTokenUrl([]));
     }
 
     /**
@@ -132,7 +121,11 @@ class ProviderTest extends TestCase
      */
     public function test_resource_owner_url_parsing()
     {
-        $this->assertEquals($this->config->buildUrl('account'), $this->provider->getResourceOwnerDetailsUrl($this->accessToken));
+        // alias the config instance.
+        $config = $this->config;
+
+        // assert the provider uses the config values.
+        $this->assertEquals($config->buildUrl('account'), $this->provider->getResourceOwnerDetailsUrl($this->accessToken));
     }
 
     /**
@@ -140,6 +133,7 @@ class ProviderTest extends TestCase
      */
     public function test_code_parsing_with_missing_code()
     {
+        // assert no token is returned from a null access code.
         $this->assertNull($this->provider->parseReturn());
     }
 
@@ -158,15 +152,8 @@ class ProviderTest extends TestCase
         // try the code parsing method.
         $token = $this->provider->parseReturn('mock-access-code');
 
-        // asset the correct token was parsed.
-        $this->assertEquals('mock-access-token', $token->getToken());
-        // parse the token expiration validity.
-        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
-        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
-        // assert the refresh token information.
-        $this->assertEquals('mock-refresh-token', $token->getRefreshToken());
-        // assert the resource owner id value.
-        $this->assertEquals('dummy-user', $token->getResourceOwnerId());
+        // assert the token contains the same values.
+        $this->assertEquals((string) $this->accessToken, (string) $token);
     }
 
     /**
@@ -184,15 +171,8 @@ class ProviderTest extends TestCase
         // try the code parsing method.
         $token = $this->provider->refreshTokenString('mock-access-code');
 
-        // asset the correct token was parsed.
-        $this->assertEquals('mock-access-token', $token->getToken());
-        // parse the token expiration validity.
-        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
-        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
-        // assert the refresh token information.
-        $this->assertEquals('mock-refresh-token', $token->getRefreshToken());
-        // assert the resource owner id value.
-        $this->assertEquals('dummy-user', $token->getResourceOwnerId());
+        // assert the token contains the same values.
+        $this->assertEquals((string) $token, (string) $this->accessToken);
     }
 
     /**
@@ -210,20 +190,18 @@ class ProviderTest extends TestCase
         // try the code parsing method.
         $token = $this->provider->refreshToken(new AccessToken($this->accessTokenData));
 
-        // asset the correct token was parsed.
-        $this->assertEquals('mock-access-token', $token->getToken());
-        // parse the token expiration validity.
-        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
-        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
-        // assert the refresh token information.
-        $this->assertEquals('mock-refresh-token', $token->getRefreshToken());
-        // assert the resource owner id value.
-        $this->assertEquals('dummy-user', $token->getResourceOwnerId());
+        // assert the token contains the same values.
+        $this->assertEquals((string) $token, (string) $this->accessToken);
 
+        // copy the token data.
         $noRefreshData = $this->accessTokenData;
+        // remove the refresh token from the data.
         unset($noRefreshData['refresh_token']);
+
         // try the code parsing method.
         $token = $this->provider->refreshToken(new AccessToken($noRefreshData));
+
+        // assert nothing was returned when the refresh is token missing.
         $this->assertNull($token);
     }
 
@@ -241,8 +219,10 @@ class ProviderTest extends TestCase
 
         // try the code parsing method.
         try {
-            $token = $this->provider->parseReturn('mock-access-code');
+            // try to parse with error.
+            $this->provider->parseReturn('mock-access-code');
         } catch (\Exception $e) {
+            // assert the exceptions instance matches.
             $this->assertInstanceOf(IdentityProviderException::class, $e);
         }
     }
@@ -293,5 +273,24 @@ class ProviderTest extends TestCase
 
         // return the client.
         return $client;
+    }
+
+    /**
+     * Generate a config mock.
+     *
+     * @return Mockery\MockInterface|Config
+     */
+    protected function mockConfig()
+    {
+        // start a config mock.
+        $config = Mockery::mock(Config::class);
+
+        // manage default expectations.
+        $config->shouldReceive('getClientId')->andReturn('some.client');
+        $config->shouldReceive('getClientSecret')->andReturn('some.secret');
+        $config->shouldReceive('getReturnUrl')->andReturn('http://some.return/url');
+
+        // return the mock itself.
+        return $config;
     }
 }
